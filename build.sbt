@@ -2,8 +2,8 @@ import sbt.Keys._
 import sbt._
 import xerial.sbt.pack.PackPlugin
 
-val organizationName = "org.slowaner"
-val rootProjectName = "scala-logger"
+val organizationName = "com.github.slowaner.scala"
+val rootProjectName = "logback-logger"
 
 // Versions
 // Testing
