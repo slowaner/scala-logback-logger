@@ -1,4 +1,4 @@
-package org.slowaner.logger
+package com.github.slowaner.scala.logger.logback
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.joran.JoranConfigurator
@@ -11,8 +11,8 @@ import java.nio.file.Paths
 /**
   * Companion object that initializes and configures [[ch.qos.logback.classic.LoggerContext]] for logger
   *
-  * @note To initialize [[ch.qos.logback.classic.LoggerContext]] just call function [[org.slowaner.logger.Logger#init()]].
-  *       This function does nothing but making [[ClassLoader]] load [[org.slowaner.logger.Logger]]
+  * @note To initialize [[ch.qos.logback.classic.LoggerContext]] just call function [[Logger#init()]].
+  *       This function does nothing but making [[ClassLoader]] load [[Logger]]
   * @author Slowaner
   * @since 0.0.1
   * @version 1.0.0
