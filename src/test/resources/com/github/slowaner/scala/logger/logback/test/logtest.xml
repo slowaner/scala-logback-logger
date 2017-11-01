@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>LOGGER-TEST</contextName>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%date{dd.MM.yyyy HH:mm:ss.SSS}] %-5level - %message%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.dir}/log/loggettest.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${user.dir}/log/loggettest-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>2MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%date{dd.MM.yyyy HH:mm:ss.SSS}] %-5level %logger{0} - %message%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AsyncFile" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="file"/>
+    </appender>
+
+    <appender name="AsyncStdout" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="stdout"/>
+    </appender>
+
+    <logger name="com.github.slowaner.scala.logger.logback" level="TRACE"/>
+
+    <root level="TRACE">
+        <appender-ref ref="AsyncFile"/>
+        <appender-ref ref="AsyncStdout"/>
+    </root>
+</configuration>
