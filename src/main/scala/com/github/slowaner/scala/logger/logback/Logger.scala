@@ -50,7 +50,7 @@ object Logger {
 
   def isInitialized: Boolean = loggerContext != null
 
-  private def checkInitialized(): Unit = if (isInitialized) sys.error("Slf4j logback not initialized")
+  private def checkInitialized(): Unit = if (!isInitialized) sys.error("Slf4j logback not initialized")
 
   private def checkNotInitialized(): Unit = if (isInitialized) sys.error("Slf4j logback is already initialized")
 
@@ -159,11 +159,11 @@ object Logger {
   }
 
   /**
-    * Load configuration from `configurationFile`
+    * Reload configuration from `configurationFile`
     *
     * @param configurationFile file to load configuration from
     */
-  def loadFrom(configurationFile: File): Unit = {
+  def reloadFrom(configurationFile: File): Unit = {
     checkInitialized()
     logger.debug("Try to load custom configuration from {}", configurationFile)
     if (configurationFile.isFile && configurationFile.canRead)
@@ -185,7 +185,56 @@ object Logger {
   }
 
   /**
-    * Load configuration from `configurationURL`
+    * Reload configuration from `configurationURL`
+    *
+    * @param configurationURL URL to load configuration from
+    */
+  def reloadFrom(configurationURL: URL): Unit = {
+    checkInitialized()
+    logger.debug("Try to load custom configuration from {}", configurationURL)
+    try {
+      val configurator = new JoranConfigurator()
+      configurator.setContext(loggerContext)
+      // Call context.reset() to clear any previous configuration, e.g. default
+      // configuration. For multi-step configuration, omit calling context.reset().
+      loggerContext.reset()
+      configurator.doConfigure(configurationURL)
+      logger.debug("Custom configuration at {} is loaded", configurationURL)
+    } catch {
+      case ex: JoranException =>
+        logger.error(s"Can't load custom configuration at $configurationURL", ex)
+      // StatusPrinter will handle this
+    }
+  }
+
+  /**
+    * Reload configuration from `configurationFile`
+    *
+    * @param configurationFile file to load configuration from
+    */
+  def loadFrom(configurationFile: File): Unit = {
+    checkInitialized()
+    logger.debug("Try to load custom configuration from {}", configurationFile)
+    if (configurationFile.isFile && configurationFile.canRead)
+      try {
+        logger.debug("Custom configuration found at {}. Start loading", configurationFile)
+        val configurator = new JoranConfigurator()
+        configurator.setContext(loggerContext)
+        // Call context.reset() to clear any previous configuration, e.g. default
+        // configuration. For multi-step configuration, omit calling context.reset().
+        // loggerContext.reset()
+        configurator.doConfigure(configurationFile)
+        logger.debug("Custom configuration at {} is loaded", configurationFile)
+      } catch {
+        case ex: JoranException =>
+          logger.error(s"Can't load custom configuration at $configurationFile", ex)
+        // StatusPrinter will handle this
+      }
+    else logger.debug("Custom configuration not found")
+  }
+
+  /**
+    * Reload configuration from `configurationURL`
     *
     * @param configurationURL URL to load configuration from
     */
@@ -197,7 +246,7 @@ object Logger {
       configurator.setContext(loggerContext)
       // Call context.reset() to clear any previous configuration, e.g. default
       // configuration. For multi-step configuration, omit calling context.reset().
-      loggerContext.reset()
+      // loggerContext.reset()
       configurator.doConfigure(configurationURL)
       logger.debug("Custom configuration at {} is loaded", configurationURL)
     } catch {

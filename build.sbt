@@ -4,6 +4,7 @@ import xerial.sbt.pack.PackPlugin
 
 val organizationName = "com.github.slowaner.scala"
 val rootProjectName = "logback-logger"
+val rootVersion = "0.0.6-SNAPSHOT"
 
 // Versions
 // Testing
@@ -16,6 +17,7 @@ val logbackVersion = "1.2.3"
 
 lazy val commonSettings = Defaults.defaultConfigs ++ Seq(
   organization := organizationName,
+  version := rootVersion,
   scalaVersion := "2.12.3",
   crossPaths := false,
   libraryDependencies ++= Seq(
